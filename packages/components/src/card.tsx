@@ -1,9 +1,9 @@
 import * as React from "react";
 import { cx } from "./types";
 
-export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {}
+export type CardProps = React.HTMLAttributes<HTMLDivElement>;
 
-export function Card({ className, children, ...props }: CardProps) {
+function CardRoot({ className, children, ...props }: CardProps) {
   return <section {...props} className={cx("ui-card", className)}>{children}</section>;
 }
 
@@ -23,14 +23,12 @@ export function CardFooter({ className, children, ...props }: React.HTMLAttribut
   return <div {...props} className={cx("ui-card__footer", className)}>{children}</div>;
 }
 
-export const CardCompound = Object.assign(Card, {
+export const Card = Object.assign(CardRoot, {
   Header: CardHeader,
   Title: CardTitle,
   Content: CardContent,
   Footer: CardFooter,
 });
-
-export { CardCompound as CompoundCard };
 
 export function Alert({ tone = "info", title, children }: { tone?: "info" | "success" | "warning" | "danger"; title?: string; children: React.ReactNode }) {
   return <div role="status" className={`ui-alert ui-alert--${tone}`}><div className="ui-alert__content">{title ? <strong>{title}</strong> : null}<div>{children}</div></div></div>;
