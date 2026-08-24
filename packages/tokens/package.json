@@ -1,0 +1,8 @@
+{
+  "name": "@ui-platform/tokens",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": { ".": "./src/index.ts", "./css": "./src/tokens.css" },
+  "scripts": { "typecheck": "tsc --noEmit -p tsconfig.json" }
+}
