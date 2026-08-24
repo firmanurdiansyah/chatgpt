@@ -1,0 +1,10 @@
+{
+  "name": "@ui-platform/domain-blocks",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": { ".": "./src/index.tsx" },
+  "scripts": { "typecheck": "tsc --noEmit -p tsconfig.json", "lint": "tsc --noEmit -p tsconfig.json" },
+  "dependencies": { "@ui-platform/blocks": "workspace:*", "@ui-platform/components": "workspace:*", "react": "19.2.8" },
+  "devDependencies": { "@types/react": "19.1.12", "typescript": "6.0.3" }
+}
