@@ -1,0 +1,13 @@
+import * as React from "react";
+import { Button, Card, CardContent, CardHeader, CardTitle, Input } from "@ui-platform/components";
+import { DataTable } from "@ui-platform/blocks";
+
+export type FieldKind = "text" | "number" | "date" | "status" | "currency";
+export interface CrudField<T extends object = Record<string, unknown>> { key: keyof T & string; label: string; kind?: FieldKind; searchable?: boolean; }
+export interface CrudResource<T extends object> { id: string; label: string; fields: readonly CrudField<T>[]; getRowId: (row: T) => string; }
+export function defineCrudResource<T extends object>(resource: CrudResource<T>) { return resource; }
+export function CrudPage<T extends object>({ resource, rows }: { resource: CrudResource<T>; rows: readonly T[] }) { const [query, setQuery] = React.useState(""); const filtered = rows.filter(row => resource.fields.some(field => String(row[field.key] ?? "").toLowerCase().includes(query.toLowerCase()))); return <section className="ui-crud-page"><CardHeader><CardTitle>{resource.label}</CardTitle></CardHeader><div className="ui-crud-page__toolbar"><Input label="Search" value={query} onChange={event => setQuery(event.target.value)} placeholder={`Search ${resource.label.toLowerCase()}`} /><Button tone="primary">Create</Button></div><DataTable rows={filtered} getRowId={resource.getRowId} columns={resource.fields.map(field => ({ key: field.key, header: field.label }))} /></section>; }
+export function DetailPage({ title, children }: { title: string; children: React.ReactNode }) { return <Card><CardHeader><CardTitle>{title}</CardTitle></CardHeader><CardContent>{children}</CardContent></Card>; }
+export function AuthPage({ title = "Sign in", children }: { title?: string; children?: React.ReactNode }) { return <main className="ui-auth-page"><Card><CardHeader><CardTitle>{title}</CardTitle></CardHeader><CardContent><form onSubmit={event => event.preventDefault()}>{children ?? <><Input label="Email" type="email" autoComplete="email" required /><Input label="Password" type="password" autoComplete="current-password" required /><Button type="submit">Sign in</Button></>}</form></CardContent></Card></main>; }
+export function ErrorPage({ code, title, description }: { code: number; title: string; description: string }) { return <main className="ui-error-page"><div><span className="ui-error-page__code">{code}</span><h1>{title}</h1><p>{description}</p><Button>Back to home</Button></div></main>; }
+export function PublicPage({ title, description, actions }: { title: string; description: string; actions?: React.ReactNode }) { return <main className="ui-public-page"><div className="ui-public-page__hero"><h1>{title}</h1><p>{description}</p>{actions}</div></main>; }
