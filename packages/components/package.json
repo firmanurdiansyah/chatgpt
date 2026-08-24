@@ -1,0 +1,10 @@
+{
+  "name": "@ui-platform/components",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": { ".": "./src/index.ts", "./button": "./src/button.tsx", "./card": "./src/card.tsx", "./badge": "./src/badge.tsx" },
+  "scripts": { "typecheck": "tsc --noEmit -p tsconfig.json", "test": "vitest run" },
+  "dependencies": { "react": "19.2.8" },
+  "devDependencies": { "@types/react": "19.1.12", "@types/react-dom": "19.1.9", "vitest": "4.1.11" }
+}
