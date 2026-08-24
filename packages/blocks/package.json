@@ -1,10 +1,10 @@
 {
   "name": "@ui-platform/blocks",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
   "exports": { ".": "./src/index.tsx" },
-  "scripts": { "typecheck": "tsc --noEmit -p tsconfig.json" },
-  "dependencies": { "@ui-platform/components": "workspace:*", "react": "19.2.8" },
-  "devDependencies": { "@types/react": "19.1.12" }
+  "scripts": { "typecheck": "tsc --noEmit -p tsconfig.json", "lint": "tsc --noEmit -p tsconfig.json" },
+  "dependencies": { "@ui-platform/components": "workspace:*", "react": "19.2.8", "recharts": "3.10.1" },
+  "devDependencies": { "@types/react": "19.1.12", "typescript": "6.0.3" }
 }
