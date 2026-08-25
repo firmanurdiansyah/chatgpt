@@ -8,7 +8,7 @@ test.describe("showcase smoke", () => {
     const diagnostics = collectBrowserErrors(page);
     await page.goto("/");
     await expect(page.locator("main")).toBeVisible();
-    const themeSelect = page.getByRole("combobox", { name: /theme/i });
+    const themeSelect = page.getByRole("combobox", { name: /tema|theme/i });
     const modeSelect = page.getByRole("combobox", { name: /mode/i });
     for (const theme of themes) {
       await themeSelect.selectOption(theme);
@@ -24,12 +24,12 @@ test.describe("showcase smoke", () => {
   test("navigates documentation sections", async ({ page }) => {
     const diagnostics = collectBrowserErrors(page);
     await page.goto("/#components");
-    await expect(page).toHaveRole("main");
-    await expect(page.getByRole("heading", { name: "Components" })).toBeVisible();
-    await page.getByRole("link", { name: "Themes" }).click();
-    await expect(page.getByRole("heading", { name: "Themes" })).toBeVisible();
-    await page.getByRole("link", { name: "Motion" }).click();
-    await expect(page.getByRole("heading", { name: "Motion" })).toBeVisible();
+    await expect(page.getByRole("main")).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Components", exact: true })).toBeVisible();
+    await page.getByRole("link", { name: "Themes", exact: true }).click();
+    await expect(page.getByRole("heading", { name: "Themes", exact: true }).first()).toBeVisible();
+    await page.getByRole("link", { name: "Motion", exact: true }).click();
+    await expect(page.getByRole("heading", { name: "Motion", exact: true }).first()).toBeVisible();
     assertNoBrowserErrors(diagnostics);
   });
 
@@ -41,8 +41,10 @@ test.describe("showcase smoke", () => {
     const trigger = page.getByRole("button", { name: /buka navigasi|open navigation/i });
     await trigger.click();
     await expect(page.getByRole("navigation")).toBeVisible();
-    await page.getByRole("link", { name: "Themes" }).click();
-    await expect(page.getByRole("heading", { name: "Themes" })).toBeVisible();
+    const themesLink = page.getByRole("link", { name: "Themes", exact: true });
+    await themesLink.scrollIntoViewIfNeeded();
+    await themesLink.click();
+    await expect(page.getByRole("heading", { name: "Themes", exact: true }).first()).toBeVisible();
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth);
     expect(overflow).toBe(false);
     assertNoBrowserErrors(diagnostics);
