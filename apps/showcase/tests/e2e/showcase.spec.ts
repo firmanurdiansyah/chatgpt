@@ -26,9 +26,25 @@ test.describe("showcase smoke", () => {
     await page.goto("/#components");
     await expect(page.locator("main")).toBeVisible();
     await expect(page.locator("h2.ui-page-heading__title").filter({ hasText: "Components" })).toBeVisible();
-    await page.getByRole("link", { name: "Themes", exact: true }).click();
+
+    const mobileTrigger = page.getByRole("button", { name: /buka navigasi|open navigation/i });
+    if (await mobileTrigger.isVisible()) {
+      await mobileTrigger.click();
+    }
+
+    const themesLink = page.getByRole("link", { name: "Themes", exact: true });
+    await themesLink.scrollIntoViewIfNeeded();
+    await expect(themesLink).toBeVisible();
+    await themesLink.click();
     await expect(page.locator("h2.ui-page-heading__title").filter({ hasText: "Themes" })).toBeVisible();
-    await page.getByRole("link", { name: "Motion", exact: true }).click();
+
+    if (await mobileTrigger.isVisible()) {
+      await mobileTrigger.click();
+    }
+    const motionLink = page.getByRole("link", { name: "Motion", exact: true });
+    await motionLink.scrollIntoViewIfNeeded();
+    await expect(motionLink).toBeVisible();
+    await motionLink.click();
     await expect(page.locator("h2.ui-page-heading__title").filter({ hasText: "Motion" })).toBeVisible();
     assertNoBrowserErrors(diagnostics);
   });
