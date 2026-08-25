@@ -6,11 +6,9 @@
     --ui-space-4: 1rem;
     --ui-space-6: 1.5rem;
     --ui-space-8: 2rem;
-
     --ui-radius-sm: 0.375rem;
     --ui-radius-md: 0.5rem;
     --ui-radius-lg: 0.75rem;
-
     --ui-surface-page: oklch(0.985 0.002 260);
     --ui-surface-card: oklch(1 0 0);
     --ui-content-primary: oklch(0.22 0.02 260);
@@ -22,45 +20,31 @@
     --ui-feedback-warning: oklch(0.72 0.15 80);
     --ui-feedback-danger: oklch(0.58 0.2 25);
     --ui-focus-ring: oklch(0.62 0.18 255);
-
     --ui-motion-duration-fast: 120ms;
     --ui-motion-duration-normal: 180ms;
     --ui-motion-duration-slow: 280ms;
     --ui-motion-ease-standard: cubic-bezier(0.2, 0, 0, 1);
     --ui-motion-ease-emphasized: cubic-bezier(0.2, 0.8, 0.2, 1);
     --ui-motion-distance-sm: 0.5rem;
-
     --ui-focus-width: 2px;
     --ui-focus-offset: 2px;
-
     --ui-chart-series-1: oklch(0.58 0.18 255);
     --ui-chart-series-2: oklch(0.65 0.16 160);
     --ui-chart-series-3: oklch(0.7 0.16 85);
     --ui-chart-positive: var(--ui-feedback-success);
     --ui-chart-negative: var(--ui-feedback-danger);
     --ui-chart-grid: var(--ui-border-default);
-
     --ui-button-primary-background: var(--ui-interactive-primary);
     --ui-button-primary-foreground: var(--ui-interactive-primary-foreground);
     --ui-card-background: var(--ui-surface-card);
     --ui-card-border: var(--ui-border-default);
   }
 
-  [data-theme="professional"] {
-    --ui-radius-md: 0.5rem;
-  }
+  [data-theme="professional"] { --ui-radius-md: 0.5rem; }
+  [data-theme="noc"] { --ui-radius-md: 0.375rem; --ui-surface-page: oklch(0.97 0.008 250); }
+  [data-theme="finance"] { --ui-radius-md: 0.375rem; --ui-interactive-primary: oklch(0.42 0.11 155); }
 
-  [data-theme="noc"] {
-    --ui-radius-md: 0.375rem;
-    --ui-surface-page: oklch(0.97 0.008 250);
-  }
-
-  [data-theme="finance"] {
-    --ui-radius-md: 0.375rem;
-    --ui-interactive-primary: oklch(0.42 0.11 155);
-  }
-
-  [data-mode="dark"] {
+  [data-mode="dark"], [data-resolved-mode="dark"] {
     --ui-surface-page: oklch(0.16 0.015 260);
     --ui-surface-card: oklch(0.2 0.018 260);
     --ui-content-primary: oklch(0.94 0.01 260);
