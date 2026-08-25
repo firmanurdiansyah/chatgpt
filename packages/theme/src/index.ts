@@ -13,6 +13,12 @@ export const mergeBrandOverride = (
   override: BrandOverride,
 ): BrandOverride => ({ ...base, ...override });
 
+const resolveColorMode = (mode: ColorMode): "light" | "dark" => {
+  if (mode !== "system") return mode;
+  if (typeof window === "undefined" || typeof window.matchMedia !== "function") return "light";
+  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+};
+
 export const applyTheme = (
   root: HTMLElement,
   theme: ThemePreset,
@@ -21,6 +27,7 @@ export const applyTheme = (
 ): void => {
   root.dataset.theme = theme;
   root.dataset.mode = mode;
+  root.dataset.resolvedMode = resolveColorMode(mode);
   if (brand?.accent) root.style.setProperty("--ui-brand-accent", brand.accent);
   if (brand?.logoUrl) root.dataset.brandLogo = brand.logoUrl;
 };
