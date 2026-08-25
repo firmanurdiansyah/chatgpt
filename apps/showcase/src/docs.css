@@ -5,10 +5,13 @@
 .ui-doc-section__title { margin:0; font-size:1rem; }
 .ui-doc-section__list { display:grid; gap:.5rem; margin:0; padding-left:1.1rem; color:var(--ui-content-secondary); line-height:1.6; }
 .ui-mobile-nav__trigger,.ui-mobile-nav__close { border:1px solid var(--ui-border-default); background:var(--ui-surface-card); color:var(--ui-content-primary); border-radius:var(--ui-radius-md); min-height:2.5rem; padding:.5rem .75rem; font-weight:700; }
-.ui-mobile-nav__trigger { position:fixed; left:.75rem; bottom:.75rem; z-index:80; box-shadow:0 12px 32px color-mix(in oklch,var(--ui-content-primary) 12%,transparent); }
+.ui-mobile-nav__trigger { position:fixed; left:.75rem; bottom:.75rem; z-index:80; box-shadow:20px 0 60px color-mix(in oklch,var(--ui-content-primary) 12%,transparent); }
 .ui-mobile-nav__close { display:inline-grid; place-items:center; width:2.5rem; padding:0; margin-left:auto; font-size:1.25rem; }
 .ui-mobile-nav__backdrop { position:fixed; inset:0; z-index:60; background:color-mix(in oklch,var(--ui-content-primary) 30%,transparent); backdrop-filter:blur(2px); }
-.ui-sidebar--mobile-open { display:flex; position:fixed; inset:0 auto 0 0; z-index:70; width:min(18rem,86vw); min-height:100vh; box-shadow:20px 0 60px color-mix(in oklch,var(--ui-content-primary) 18%,transparent); }
+.ui-sidebar--mobile-open { display:flex; flex-direction:column; position:fixed; inset:0 auto 0 0; z-index:70; width:min(18rem,86vw); height:100dvh; min-height:0; overflow:hidden; box-shadow:20px 0 60px color-mix(in oklch,var(--ui-content-primary) 18%,transparent); }
+.ui-sidebar--mobile-open .ui-sidebar__nav { min-height:0; overflow-y:auto; overscroll-behavior:contain; -webkit-overflow-scrolling:touch; padding:0 1rem 2rem; }
+.ui-sidebar--mobile-open .ui-sidebar__item { display:block; padding:.7rem .75rem; border-radius:.5rem; color:var(--ui-content-secondary); font-size:.8rem; }
+.ui-sidebar--mobile-open .ui-sidebar__item[aria-current="page"] { color:var(--ui-content-primary); background:color-mix(in oklch,var(--ui-interactive-primary) 10%,transparent); font-weight:750; }
 @media (min-width:1080px) {
   .ui-mobile-nav__trigger,.ui-mobile-nav__close,.ui-mobile-nav__backdrop { display:none; }
 }
