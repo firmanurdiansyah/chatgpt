@@ -23,12 +23,27 @@
     --ui-feedback-danger: oklch(0.58 0.2 25);
     --ui-focus-ring: oklch(0.62 0.18 255);
 
+    --ui-motion-duration-fast: 120ms;
+    --ui-motion-duration-normal: 180ms;
+    --ui-motion-duration-slow: 280ms;
+    --ui-motion-ease-standard: cubic-bezier(0.2, 0, 0, 1);
+    --ui-motion-ease-emphasized: cubic-bezier(0.2, 0.8, 0.2, 1);
+    --ui-motion-distance-sm: 0.5rem;
+
+    --ui-focus-width: 2px;
+    --ui-focus-offset: 2px;
+
     --ui-chart-series-1: oklch(0.58 0.18 255);
     --ui-chart-series-2: oklch(0.65 0.16 160);
     --ui-chart-series-3: oklch(0.7 0.16 85);
     --ui-chart-positive: var(--ui-feedback-success);
     --ui-chart-negative: var(--ui-feedback-danger);
     --ui-chart-grid: var(--ui-border-default);
+
+    --ui-button-primary-background: var(--ui-interactive-primary);
+    --ui-button-primary-foreground: var(--ui-interactive-primary-foreground);
+    --ui-card-background: var(--ui-surface-card);
+    --ui-card-border: var(--ui-border-default);
   }
 
   [data-theme="professional"] {
@@ -53,6 +68,11 @@
     --ui-border-default: oklch(0.32 0.018 260);
     --ui-focus-ring: oklch(0.72 0.16 255);
   }
+}
+
+:focus-visible {
+  outline: var(--ui-focus-width) solid var(--ui-focus-ring);
+  outline-offset: var(--ui-focus-offset);
 }
 
 @media (prefers-reduced-motion: reduce) {
