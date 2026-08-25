@@ -5,3 +5,4 @@ export * from "./card";
 export * from "./overlay";
 export * from "./compound";
 export * from "./motion";
+export * from "./animate-ui";
