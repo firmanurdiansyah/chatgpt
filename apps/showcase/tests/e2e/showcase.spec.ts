@@ -24,12 +24,12 @@ test.describe("showcase smoke", () => {
   test("navigates documentation sections", async ({ page }) => {
     const diagnostics = collectBrowserErrors(page);
     await page.goto("/#components");
-    await expect(page.getByRole("main")).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Components", exact: true })).toBeVisible();
+    await expect(page.locator("main")).toBeVisible();
+    await expect(page.locator("h2.ui-page-heading__title").filter({ hasText: "Components" })).toBeVisible();
     await page.getByRole("link", { name: "Themes", exact: true }).click();
-    await expect(page.getByRole("heading", { name: "Themes", exact: true }).first()).toBeVisible();
+    await expect(page.locator("h2.ui-page-heading__title").filter({ hasText: "Themes" })).toBeVisible();
     await page.getByRole("link", { name: "Motion", exact: true }).click();
-    await expect(page.getByRole("heading", { name: "Motion", exact: true }).first()).toBeVisible();
+    await expect(page.locator("h2.ui-page-heading__title").filter({ hasText: "Motion" })).toBeVisible();
     assertNoBrowserErrors(diagnostics);
   });
 
@@ -44,7 +44,7 @@ test.describe("showcase smoke", () => {
     const themesLink = page.getByRole("link", { name: "Themes", exact: true });
     await themesLink.scrollIntoViewIfNeeded();
     await themesLink.click();
-    await expect(page.getByRole("heading", { name: "Themes", exact: true }).first()).toBeVisible();
+    await expect(page.locator("h2.ui-page-heading__title").filter({ hasText: "Themes" })).toBeVisible();
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth);
     expect(overflow).toBe(false);
     assertNoBrowserErrors(diagnostics);
