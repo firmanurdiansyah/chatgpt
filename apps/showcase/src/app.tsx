@@ -1,42 +1,51 @@
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "motion/react";
-import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { Badge, Button, Card } from "@ui-platform/components";
 import { StatCard } from "@ui-platform/blocks";
 import { applyTheme, type ColorMode, type ThemePreset } from "@ui-platform/theme";
 
 type Locale = "id-ID" | "en-US";
 type Density = "compact" | "comfortable" | "spacious";
+type Route = "overview" | "foundations" | "components" | "blocks" | "charts" | "domains" | "themes" | "motion" | "localization" | "accessibility" | "docs";
+
+const nav = [
+  ["overview", "Overview"],
+  ["foundations", "Foundations"],
+  ["components", "Components"],
+  ["blocks", "Blocks"],
+  ["charts", "Charts"],
+  ["domains", "Domains"],
+  ["themes", "Themes"],
+  ["motion", "Motion"],
+  ["localization", "Localization"],
+  ["accessibility", "Accessibility"],
+  ["docs", "Docs"],
+] as const satisfies readonly [Route, string][];
 
 const copy = {
-  "id-ID": {
-    eyebrow: "UI PLATFORM · FOUNDATION", title: "Satu system untuk seluruh produk enterprise.",
-    lede: "Reference implementation yang membuktikan themeable UI, semantic tokens, reusable components, data visualization, i18n, accessibility, dan responsive behavior dalam satu surface.",
-    primary: "Eksplor komponen", secondary: "Lihat arsitektur", revenue: "Pendapatan bulanan", users: "Pengguna aktif", uptime: "Uptime", tickets: "Tiket terbuka", trend: "Tren operasional", activity: "Aktivitas terbaru", theme: "Theme", mode: "Mode", density: "Density", locale: "Bahasa", status: "Status",
-  },
-  "en-US": {
-    eyebrow: "UI PLATFORM · FOUNDATION", title: "One system for every enterprise product.",
-    lede: "A reference implementation proving themeable UI, semantic tokens, reusable components, data visualization, i18n, accessibility, and responsive behavior in one surface.",
-    primary: "Explore components", secondary: "View architecture", revenue: "Monthly revenue", users: "Active users", uptime: "Uptime", tickets: "Open tickets", trend: "Operational trend", activity: "Latest activity", theme: "Theme", mode: "Mode", density: "Density", locale: "Language", status: "Status",
-  },
+  "id-ID": { theme: "Tema", mode: "Mode", density: "Kepadatan", locale: "Bahasa", menu: "Buka navigasi", close: "Tutup navigasi", title: "Satu system untuk seluruh produk enterprise.", lede: "Design system yang themeable, responsive, accessible, localized, dan motion-aware.", explore: "Eksplor komponen", architecture: "Lihat arsitektur" },
+  "en-US": { theme: "Theme", mode: "Mode", density: "Density", locale: "Language", menu: "Open navigation", close: "Close navigation", title: "One system for every enterprise product.", lede: "A themeable, responsive, accessible, localized and motion-aware design system.", explore: "Explore components", architecture: "View architecture" },
 } as const;
 
-const data = [
-  { month: "Jan", value: 42 }, { month: "Feb", value: 48 }, { month: "Mar", value: 46 }, { month: "Apr", value: 58 },
-  { month: "May", value: 64 }, { month: "Jun", value: 61 }, { month: "Jul", value: 72 }, { month: "Aug", value: 78 },
-];
-
-const activities = [
-  ["Payment reconciliation completed", "2 min", "success"], ["NMS edge cluster degraded", "11 min", "warning"],
-  ["CRM import processed", "24 min", "info"], ["Invoice #INV-2048 approved", "41 min", "success"],
-] as const;
+function routeFromHash(): Route {
+  const value = window.location.hash.slice(1) as Route;
+  return nav.some(([key]) => key === value) ? value : "overview";
+}
 
 export function App() {
+  const [route, setRoute] = useState<Route>(() => routeFromHash());
+  const [mobileNav, setMobileNav] = useState(false);
   const [theme, setTheme] = useState<ThemePreset>("professional");
   const [mode, setMode] = useState<ColorMode>("system");
   const [density, setDensity] = useState<Density>("comfortable");
   const [locale, setLocale] = useState<Locale>("id-ID");
   const t = copy[locale];
+
+  useEffect(() => {
+    const onHashChange = () => setRoute(routeFromHash());
+    window.addEventListener("hashchange", onHashChange);
+    return () => window.removeEventListener("hashchange", onHashChange);
+  }, []);
 
   useEffect(() => {
     const root = document.documentElement;
@@ -46,60 +55,61 @@ export function App() {
   }, [theme, mode, density, locale]);
 
   const formatter = useMemo(() => new Intl.NumberFormat(locale, { maximumFractionDigits: 1 }), [locale]);
+  const activeLabel = nav.find(([key]) => key === route)?.[1] ?? "Overview";
 
-  return (
-    <div className="ui-app-shell">
-      <a className="ui-skip-link" href="#main-content">Skip to content</a>
-      <aside className="ui-sidebar" aria-label="Primary navigation">
-        <div className="ui-brand ui-brand--sidebar">
-          <div className="ui-brand__mark" aria-hidden="true">UI</div>
-          <div><div className="ui-brand__name">UI Platform</div><div className="ui-brand__meta">Enterprise system</div></div>
-        </div>
-        <nav className="ui-sidebar__nav">
-          {['Overview', 'Components', 'Blocks', 'Charts', 'Domains', 'Docs'].map((item, index) => <a className="ui-sidebar__item" aria-current={index === 0 ? "page" : undefined} href={`#${item.toLowerCase()}`} key={item}>{item}</a>)}
-        </nav>
-      </aside>
-
-      <main id="main-content" className="ui-main">
-        <header className="ui-topbar">
-          <div className="ui-brand"><div className="ui-brand__mark" aria-hidden="true">UI</div><div><div className="ui-brand__name">Design System</div><div className="ui-brand__meta">Professional · NOC · Finance</div></div></div>
-          <div className="ui-toolbar" aria-label="Display preferences">
-            <label><span className="sr-only">{t.theme}</span><select className="ui-select" value={theme} onChange={(e) => setTheme(e.target.value as ThemePreset)} aria-label={t.theme}><option value="professional">Professional</option><option value="noc">NOC</option><option value="finance">Finance</option></select></label>
-            <label><span className="sr-only">{t.mode}</span><select className="ui-select" value={mode} onChange={(e) => setMode(e.target.value as ColorMode)} aria-label={t.mode}><option value="system">System</option><option value="light">Light</option><option value="dark">Dark</option></select></label>
-            <label><span className="sr-only">{t.density}</span><select className="ui-select" value={density} onChange={(e) => setDensity(e.target.value as Density)} aria-label={t.density}><option value="compact">Compact</option><option value="comfortable">Comfortable</option><option value="spacious">Spacious</option></select></label>
-            <label><span className="sr-only">{t.locale}</span><select className="ui-select" value={locale} onChange={(e) => setLocale(e.target.value as Locale)} aria-label={t.locale}><option value="id-ID">ID</option><option value="en-US">EN</option></select></label>
-          </div>
-        </header>
-
-        <div className="ui-content">
-          <motion.section className="ui-hero" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .45 }}>
-            <p className="ui-eyebrow">{t.eyebrow}</p><h1 className="ui-title">{t.title}</h1><p className="ui-lede">{t.lede}</p>
-            <div className="ui-actions"><Button size="lg">{t.primary}</Button><Button size="lg" variant="secondary">{t.secondary}</Button></div>
-          </motion.section>
-
-          <section className="ui-grid ui-grid--stats" aria-label="Key metrics">
-            <StatCard label={t.revenue} value={`Rp ${formatter.format(12.8)}M`} delta="+12.4%" />
-            <StatCard label={t.users} value={formatter.format(4820)} delta="+8.7%" />
-            <StatCard label={t.uptime} value="99.98%" delta="+0.03%" />
-            <StatCard label={t.tickets} value={formatter.format(38)} delta="-14.2%" tone="warning" />
-          </section>
-
-          <section className="ui-grid ui-grid--content ui-section-gap">
-            <Card>
-              <Card.Header><Card.Title>{t.trend}</Card.Title><Badge tone="success">Live</Badge></Card.Header>
-              <Card.Content><div className="ui-chart"><ResponsiveContainer width="100%" height="100%"><AreaChart data={data} margin={{ top: 8, right: 8, left: -20, bottom: 0 }}><defs><linearGradient id="ui-chart-fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="var(--ui-chart-series-1)" stopOpacity={.3}/><stop offset="100%" stopColor="var(--ui-chart-series-1)" stopOpacity={0}/></linearGradient></defs><CartesianGrid stroke="var(--ui-chart-grid)" vertical={false}/><XAxis dataKey="month" tickLine={false} axisLine={false} tick={{ fill: "var(--ui-content-secondary)", fontSize: 11 }}/><YAxis tickLine={false} axisLine={false} tick={{ fill: "var(--ui-content-secondary)", fontSize: 11 }}/><Tooltip contentStyle={{ background: "var(--ui-surface-card)", border: "1px solid var(--ui-border-default)", borderRadius: 8, color: "var(--ui-content-primary)" }}/><Area type="monotone" dataKey="value" stroke="var(--ui-chart-series-1)" strokeWidth={2.5} fill="url(#ui-chart-fill)"/></AreaChart></ResponsiveContainer></div></Card.Content>
-            </Card>
-
-            <Card>
-              <Card.Header><Card.Title>{t.activity}</Card.Title><Badge tone="info">24h</Badge></Card.Header>
-              <Card.Content><div className="ui-activity-list">{activities.map(([label, time, tone]) => <div className="ui-activity" key={label}><div className="ui-activity__copy"><div className="ui-activity__label">{label}</div><div className="ui-activity__time">{time} ago</div></div><Badge tone={tone}>{t.status}</Badge></div>)}</div></Card.Content>
-            </Card>
-          </section>
-
-          <section className="ui-section-gap"><Card><Card.Header><Card.Title>Component contract</Card.Title><Badge tone="neutral">Composition-first</Badge></Card.Header><Card.Content><div className="ui-actions"><Button size="sm">Primary</Button><Button size="sm" variant="secondary">Secondary</Button><Button size="sm" variant="ghost">Ghost</Button><Button size="sm" variant="danger">Destructive</Button><Badge tone="success">Success</Badge><Badge tone="warning">Warning</Badge><Badge tone="danger">Critical</Badge></div></Card.Content></Card></section>
-          <footer className="ui-footer">UI Platform foundation · React 19 · TypeScript 6 strict · Tailwind 4 · shadcn/ui v4 · Animate UI · Recharts</footer>
-        </div>
-      </main>
-    </div>
+  const page = route === "overview" ? (
+    <>
+      <motion.section className="ui-hero" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .3 }}>
+        <p className="ui-eyebrow">UI PLATFORM · FOUNDATION</p><h1 className="ui-title">{t.title}</h1><p className="ui-lede">{t.lede}</p>
+        <div className="ui-actions"><a className="ui-button ui-button--lg ui-button--primary" href="#components">{t.explore}</a><a className="ui-button ui-button--lg ui-button--secondary" href="#foundations">{t.architecture}</a></div>
+      </motion.section>
+      <section className="ui-grid ui-grid--stats" aria-label="Key metrics">
+        <StatCard label="Reusable components" value={formatter.format(24)} delta="Composition-first" />
+        <StatCard label="Themes" value="3 × 2" delta="Professional · NOC · Finance" />
+        <StatCard label="Locales" value="ID · EN" delta="Typed resources" />
+        <StatCard label="Motion" value="A11y" delta="Reduced-motion ready" tone="success" />
+      </section>
+    </>
+  ) : (
+    <Card><Card.Header><Card.Title>{activeLabel}</Card.Title><Badge tone="info">Phase 2</Badge></Card.Header><Card.Content>
+      {route === "foundations" && <Section title="Semantic foundation" items={["Color, surface, content and feedback tokens", "Typography, spacing, radius and elevation", "Component tokens mapped through themes", "Mobile-first responsive contracts"]} />}
+      {route === "components" && <Section title="Core component catalog" items={["Button and Badge", "Card compound runtime API", "Form and overlay foundations", "Accessible states and focus contracts"]} />}
+      {route === "blocks" && <Section title="Reusable blocks" items={["StatCard", "Operational activity patterns", "Dashboard composition primitives", "Domain-ready block boundaries"]} />}
+      {route === "charts" && <Section title="Data visualization" items={["Recharts integration", "Semantic chart tokens", "Responsive containers", "Accessible chart presentation"]} />}
+      {route === "domains" && <Section title="Domain readiness" items={["Dashboard", "CRM", "Billing", "Payment", "NMS / OSS / GIS", "ERP / HRM / CMS / Monitoring"]} />}
+      {route === "themes" && <Section title="Theme playground" items={["Professional", "NOC", "Finance", "Light / Dark / System", "Semantic token mapping"]} />}
+      {route === "motion" && <Section title="Animate UI foundation" items={["Motion abstraction boundary", "Presence and enter/exit patterns", "Purposeful interaction motion", "prefers-reduced-motion"]} />}
+      {route === "localization" && <Section title="Localization" items={["Indonesian and English", "Typed locale contract", "Localized document language", "No locale-specific component APIs"]} />}
+      {route === "accessibility" && <Section title="Accessibility" items={["Semantic HTML", "Keyboard navigation", "Visible focus", "Accessible names", "Reduced motion"]} />}
+      {route === "docs" && <Section title="Documentation contract" items={["Purpose and API", "Variants and states", "Responsive behavior", "Theme and motion behavior", "Accessibility guidance", "Do / Don't"]} />}
+    </Card.Content></Card>
   );
+
+  return <div className="ui-app-shell">
+    <a className="ui-skip-link" href="#main-content">Skip to content</a>
+    <button className="ui-mobile-nav__trigger" type="button" aria-expanded={mobileNav} aria-controls="mobile-navigation" onClick={() => setMobileNav(true)}>{t.menu}</button>
+    {mobileNav && <div className="ui-mobile-nav__backdrop" aria-hidden="true" onClick={() => setMobileNav(false)} />}
+    <aside className={`ui-sidebar ${mobileNav ? "ui-sidebar--mobile-open" : ""}`} id="mobile-navigation" aria-label="Primary navigation">
+      <div className="ui-brand ui-brand--sidebar"><div className="ui-brand__mark" aria-hidden="true">UI</div><div><div className="ui-brand__name">UI Platform</div><div className="ui-brand__meta">Enterprise design system</div></div><button className="ui-mobile-nav__close" type="button" aria-label={t.close} onClick={() => setMobileNav(false)}>×</button></div>
+      <nav className="ui-sidebar__nav">
+        {nav.map(([key, label]) => <a className="ui-sidebar__item" aria-current={route === key ? "page" : undefined} href={`#${key}`} key={key} onClick={() => setMobileNav(false)}>{label}</a>)}
+      </nav>
+    </aside>
+    <main id="main-content" className="ui-main">
+      <header className="ui-topbar">
+        <div className="ui-brand"><div className="ui-brand__mark" aria-hidden="true">UI</div><div><div className="ui-brand__name">Design System</div><div className="ui-brand__meta">Professional · NOC · Finance</div></div></div>
+        <div className="ui-toolbar" aria-label="Display preferences">
+          <label><span className="sr-only">{t.theme}</span><select className="ui-select" value={theme} onChange={(e) => setTheme(e.target.value as ThemePreset)} aria-label={t.theme}><option value="professional">Professional</option><option value="noc">NOC</option><option value="finance">Finance</option></select></label>
+          <label><span className="sr-only">{t.mode}</span><select className="ui-select" value={mode} onChange={(e) => setMode(e.target.value as ColorMode)} aria-label={t.mode}><option value="system">System</option><option value="light">Light</option><option value="dark">Dark</option></select></label>
+          <label><span className="sr-only">{t.density}</span><select className="ui-select" value={density} onChange={(e) => setDensity(e.target.value as Density)} aria-label={t.density}><option value="compact">Compact</option><option value="comfortable">Comfortable</option><option value="spacious">Spacious</option></select></label>
+          <label><span className="sr-only">{t.locale}</span><select className="ui-select" value={locale} onChange={(e) => setLocale(e.target.value as Locale)} aria-label={t.locale}><option value="id-ID">ID</option><option value="en-US">EN</option></select></label>
+        </div>
+      </header>
+      <div className="ui-content"><div className="ui-page-heading"><p className="ui-eyebrow">PHASE 2 · CORE DESIGN SYSTEM</p><h2 className="ui-page-heading__title">{activeLabel}</h2><p className="ui-page-heading__lede">Themeable, reusable, accessible foundation untuk aplikasi enterprise jangka panjang.</p></div>{page}<footer className="ui-footer">React 19 · TypeScript 6 strict · Tailwind 4 · shadcn/ui v4 · Animate UI · Recharts</footer></div>
+    </main>
+  </div>;
+}
+
+function Section({ title, items }: { title: string; items: readonly string[] }) {
+  return <div className="ui-doc-section"><h3 className="ui-doc-section__title">{title}</h3><ul className="ui-doc-section__list">{items.map((item) => <li key={item}>{item}</li>)}</ul></div>;
 }
