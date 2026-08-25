@@ -10,16 +10,19 @@ test.describe("showcase smoke", () => {
     await page.goto("/");
     await expect(page.locator("main")).toBeVisible();
 
+    const themeSelect = page.getByRole("combobox", { name: /theme/i });
+    const modeSelect = page.getByRole("combobox", { name: /mode/i });
+
     for (const theme of themes) {
-      await page.getByRole("button", { name: new RegExp(theme, "i") }).click();
-      await expect(page.locator("body")).toHaveAttribute("data-theme", theme);
+      await themeSelect.selectOption(theme);
+      await expect(page.locator("html")).toHaveAttribute("data-theme", theme);
     }
 
-    await page.getByRole("button", { name: /dark/i }).click();
-    await expect(page.locator("body")).toHaveAttribute("data-mode", "dark");
+    await modeSelect.selectOption("dark");
+    await expect(page.locator("html")).toHaveAttribute("data-mode", "dark");
 
-    await page.getByRole("button", { name: /light/i }).click();
-    await expect(page.locator("body")).toHaveAttribute("data-mode", "light");
+    await modeSelect.selectOption("light");
+    await expect(page.locator("html")).toHaveAttribute("data-mode", "light");
 
     assertNoBrowserErrors(diagnostics);
   });
