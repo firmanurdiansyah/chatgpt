@@ -38,5 +38,18 @@ jobs:
         run: pnpm test
       - name: Build
         run: pnpm build
+      - name: Install Playwright browser
+        run: pnpm --filter @ui-platform/showcase exec playwright install --with-deps chromium
+      - name: Browser smoke diagnostics
+        run: pnpm test:e2e
+      - name: Upload browser diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: showcase-browser-diagnostics
+          path: |
+            apps/showcase/playwright-report/
+            apps/showcase/test-results/
+          if-no-files-found: ignore
       - name: Performance budget
         run: pnpm perf:budget
