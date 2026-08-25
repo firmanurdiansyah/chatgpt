@@ -1,3 +1,5 @@
+import type { Page } from "@playwright/test";
+
 export type BrowserDiagnostics = {
   consoleErrors: string[];
   pageErrors: string[];
@@ -5,9 +7,7 @@ export type BrowserDiagnostics = {
   failedResponses: string[];
 };
 
-export function collectBrowserErrors(page: {
-  on: (event: string, handler: (...args: any[]) => void) => void;
-}) {
+export function collectBrowserErrors(page: Page): BrowserDiagnostics {
   const diagnostics: BrowserDiagnostics = {
     consoleErrors: [],
     pageErrors: [],
@@ -24,19 +24,23 @@ export function collectBrowserErrors(page: {
   });
 
   page.on("requestfailed", (request) => {
-    diagnostics.requestFailures.push(`${request.method()} ${request.url()}: ${request.failure()?.errorText ?? "unknown"}`);
+    diagnostics.requestFailures.push(
+      `${request.method()} ${request.url()}: ${request.failure()?.errorText ?? "unknown"}`,
+    );
   });
 
   page.on("response", (response) => {
     if (response.status() >= 400) {
-      diagnostics.failedResponses.push(`${response.status()} ${response.request().method()} ${response.url()}`);
+      diagnostics.failedResponses.push(
+        `${response.status()} ${response.request().method()} ${response.url()}`,
+      );
     }
   });
 
   return diagnostics;
 }
 
-export function assertNoBrowserErrors(diagnostics: BrowserDiagnostics) {
+export function assertNoBrowserErrors(diagnostics: BrowserDiagnostics): void {
   const failures = [
     ...diagnostics.consoleErrors.map((error) => `console.error: ${error}`),
     ...diagnostics.pageErrors.map((error) => `pageerror: ${error}`),
